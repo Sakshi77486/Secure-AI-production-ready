@@ -1,14 +1,62 @@
-# Python
-venv/
-__pycache__/
-*.pyc
-
-# Environment variables
+cat > .gitignore <<'EOF'
+# Environment and secrets
 .env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
 
-# Uploaded files
-uploads/
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+**/.venv/
+venv/
+**/venv/
+env/
+**/env/
 
-# Testingcat .gitignore
-.pytest_cache/
-.coverage
+# Node / React
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+.vite/
+**/.vite/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+**/logs/
+
+# Temporary files
+temp/
+**/temp/
+tmp/
+**/tmp/
+
+# Uploads
+uploads/*
+**/uploads/*
+!uploads/.gitkeep
+!**/uploads/.gitkeep
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+EOF
