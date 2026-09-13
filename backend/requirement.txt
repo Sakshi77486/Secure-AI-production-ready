@@ -11,3 +11,4 @@ ollama
 httpx
 pytest
 pytest-asyncio
+bandit==1.9.4

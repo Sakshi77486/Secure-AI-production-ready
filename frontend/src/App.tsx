@@ -18,8 +18,8 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { FaGithub } from "react-icons/fa";
 
+import { FaGithub } from "react-icons/fa";
 
 import "./App.css";
 import apiClient from "./api/client";
@@ -42,6 +42,7 @@ type ScanResult = {
   repository_url: string;
   repository_id: string;
   files_count: number;
+  files_scanned: number;
   files: string[];
   findings_count: number;
   findings: ScanFinding[];
@@ -49,6 +50,7 @@ type ScanResult = {
 
 function App() {
   const [activeTab, setActiveTab] = useState<"github" | "upload">("github");
+
   const [repoUrl, setRepoUrl] = useState("");
   const [fileName, setFileName] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -82,9 +84,9 @@ function App() {
         );
 
         const response = await apiClient.post<ScanResult>(
-          "/api/repositories/github",
+          "/api/scans/repository",
           {
-            url,
+            repository_url: url,
           }
         );
 
@@ -95,10 +97,33 @@ function App() {
       } catch (error: any) {
         console.error("SecureAI scan error:", error);
 
-        setScanMessage(
-          error.response?.data?.detail ||
-            "Cannot connect to SecureAI backend. Make sure FastAPI is running on port 8000."
-        );
+        if (error.response) {
+          console.error("Status:", error.response.status);
+          console.error("Response:", error.response.data);
+
+          setScanMessage(
+            error.response.data?.detail ||
+              `Backend returned error ${error.response.status}`
+          );
+        } else if (error.request) {
+          console.error(
+            "No response received from backend:",
+            error.request
+          );
+
+          setScanMessage(
+            "Could not reach SecureAI backend at http://127.0.0.1:8000"
+          );
+        } else {
+          console.error(
+            "Request setup error:",
+            error.message
+          );
+
+          setScanMessage(
+            `Request error: ${error.message}`
+          );
+        }
       } finally {
         setIsScanning(false);
       }
@@ -108,9 +133,7 @@ function App() {
         return;
       }
 
-      alert(
-        "ZIP scanning will be connected in the next step."
-      );
+      alert("ZIP scanning will be connected in the next step.");
     }
   };
 
@@ -119,7 +142,9 @@ function App() {
   ) => {
     const file = event.target.files?.[0];
 
-    if (!file) return;
+    if (!file) {
+      return;
+    }
 
     if (!file.name.toLowerCase().endsWith(".zip")) {
       alert("Please upload a ZIP file.");
@@ -142,11 +167,17 @@ function App() {
           <a href="#" className="brand">
             <div className="brand-icon">
               <ShieldCheck size={28} />
-              <Code2 size={13} className="brand-code" />
+              <Code2
+                size={13}
+                className="brand-code"
+              />
             </div>
 
             <span>
-              Secure<span className="brand-gradient">AI</span>
+              Secure
+              <span className="brand-gradient">
+                AI
+              </span>
             </span>
           </a>
 
@@ -155,23 +186,39 @@ function App() {
               mobileMenu ? "mobile-open" : ""
             }`}
           >
-            <a href="#home" className="active">
+            <a
+              href="#home"
+              className="active"
+              onClick={() => setMobileMenu(false)}
+            >
               Home
             </a>
 
-            <a href="#features">
+            <a
+              href="#features"
+              onClick={() => setMobileMenu(false)}
+            >
               Features
             </a>
 
-            <a href="#how-it-works">
+            <a
+              href="#how-it-works"
+              onClick={() => setMobileMenu(false)}
+            >
               How It Works
             </a>
 
-            <a href="#security">
+            <a
+              href="#security"
+              onClick={() => setMobileMenu(false)}
+            >
               Security
             </a>
 
-            <a href="#about">
+            <a
+              href="#about"
+              onClick={() => setMobileMenu(false)}
+            >
               About
             </a>
 
@@ -207,7 +254,10 @@ function App() {
 
             <button
               className="menu-btn"
-              onClick={() => setMobileMenu(!mobileMenu)}
+              onClick={() =>
+                setMobileMenu(!mobileMenu)
+              }
+              aria-label="Toggle menu"
             >
               {mobileMenu ? <X /> : <Menu />}
             </button>
@@ -221,14 +271,17 @@ function App() {
 
       <main>
 
-        <section className="hero" id="home">
+        <section
+          className="hero"
+          id="home"
+        >
 
           <div className="hero-glow glow-one"></div>
           <div className="hero-glow glow-two"></div>
 
           <div className="hero-container">
 
-            {/* LEFT */}
+            {/* ================= LEFT ================= */}
 
             <div className="hero-content">
 
@@ -240,17 +293,19 @@ function App() {
               <h1>
                 Secure your code
                 <br />
-                <span>before attackers do.</span>
+                <span>
+                  before attackers do.
+                </span>
               </h1>
 
               <p className="hero-description">
-                SecureAI uses advanced static analysis and AI
-                to detect vulnerabilities, explain the risks,
-                and suggest fixes — so you can build safer,
-                stronger applications.
+                SecureAI uses advanced static analysis
+                and AI to detect vulnerabilities, explain
+                the risks, and suggest fixes — so you can
+                build safer, stronger applications.
               </p>
 
-              {/* SCAN BOX */}
+              {/* ================= SCAN BOX ================= */}
 
               <div className="scan-box">
 
@@ -290,11 +345,14 @@ function App() {
 
                 </div>
 
+                {/* ================= GITHUB ================= */}
+
                 {activeTab === "github" ? (
 
                   <div className="input-row">
 
                     <div className="url-input">
+
                       <Search size={18} />
 
                       <input
@@ -305,6 +363,7 @@ function App() {
                           setRepoUrl(e.target.value)
                         }
                       />
+
                     </div>
 
                     <button
@@ -322,6 +381,8 @@ function App() {
                   </div>
 
                 ) : (
+
+                  /* ================= ZIP UPLOAD ================= */
 
                   <div className="upload-area">
 
@@ -358,13 +419,14 @@ function App() {
 
                 <p className="scan-hint">
                   <LockKeyhole size={13} />
-                  Your code stays private and is processed
-                  securely.
+
+                  Your code stays private and is
+                  processed securely.
                 </p>
 
               </div>
 
-              {/* SCAN MESSAGE */}
+              {/* ================= SCAN MESSAGE ================= */}
 
               {scanMessage && (
                 <div className="scan-message">
@@ -377,21 +439,27 @@ function App() {
               {scanResult && (
                 <div className="scan-results">
 
+                  {/* ================= RESULTS HEADER ================= */}
+
                   <div className="results-header">
 
                     <div>
+
                       <span className="section-eyebrow">
                         SECURITY ANALYSIS
                       </span>
 
                       <h2>
                         Scan{" "}
-                        <span>Complete</span>
+                        <span>
+                          Complete
+                        </span>
                       </h2>
 
                       <p>
                         {scanResult.repository_url}
                       </p>
+
                     </div>
 
                     <div className="results-status">
@@ -401,26 +469,35 @@ function App() {
 
                   </div>
 
-                  {/* SUMMARY */}
+                  {/* ================= SUMMARY ================= */}
 
                   <div className="scan-summary">
 
                     <div className="summary-card">
-                      <span>Files Scanned</span>
+                      <span>
+                        Files Scanned
+                      </span>
+
                       <strong>
-                        {scanResult.files_count}
+                        {scanResult.files_scanned}
                       </strong>
                     </div>
 
                     <div className="summary-card">
-                      <span>Total Findings</span>
+                      <span>
+                        Total Findings
+                      </span>
+
                       <strong>
                         {scanResult.findings_count}
                       </strong>
                     </div>
 
                     <div className="summary-card">
-                      <span>Critical</span>
+                      <span>
+                        Critical
+                      </span>
+
                       <strong>
                         {
                           scanResult.findings.filter(
@@ -433,7 +510,10 @@ function App() {
                     </div>
 
                     <div className="summary-card">
-                      <span>High</span>
+                      <span>
+                        High
+                      </span>
+
                       <strong>
                         {
                           scanResult.findings.filter(
@@ -447,7 +527,7 @@ function App() {
 
                   </div>
 
-                  {/* FILES */}
+                  {/* ================= FILES ================= */}
 
                   <div className="results-section">
 
@@ -459,16 +539,24 @@ function App() {
 
                       {scanResult.files.map(
                         (file, index) => (
+
                           <div
                             className="file-item"
                             key={`${file}-${index}`}
                           >
+
                             <Code2 size={16} />
-                            <span>{file}</span>
+
+                            <span>
+                              {file}
+                            </span>
+
                             <CheckCircle2
                               size={16}
                             />
+
                           </div>
+
                         )
                       )}
 
@@ -476,7 +564,7 @@ function App() {
 
                   </div>
 
-                  {/* FINDINGS */}
+                  {/* ================= FINDINGS ================= */}
 
                   <div className="results-section">
 
@@ -492,6 +580,8 @@ function App() {
 
                     </div>
 
+                    {/* ================= NO FINDINGS ================= */}
+
                     {scanResult.findings_count === 0 ? (
 
                       <div className="no-findings">
@@ -501,20 +591,24 @@ function App() {
                         </div>
 
                         <div>
+
                           <h3>
                             No vulnerabilities detected
                           </h3>
 
                           <p>
                             SecureAI did not detect any
-                            vulnerabilities in the supported
-                            files.
+                            vulnerabilities in the
+                            supported files.
                           </p>
+
                         </div>
 
                       </div>
 
                     ) : (
+
+                      /* ================= FINDINGS LIST ================= */
 
                       <div className="findings-list">
 
@@ -525,6 +619,8 @@ function App() {
                               className="real-finding-card"
                               key={`${finding.rule_id}-${index}`}
                             >
+
+                              {/* ================= FINDING TOP ================= */}
 
                               <div className="real-finding-top">
 
@@ -540,13 +636,19 @@ function App() {
 
                               </div>
 
+                              {/* ================= VULNERABILITY ================= */}
+
                               <h3>
                                 {finding.vulnerability_type}
                               </h3>
 
+                              {/* ================= MESSAGE ================= */}
+
                               <p className="finding-message">
                                 {finding.message}
                               </p>
+
+                              {/* ================= META ================= */}
 
                               <div className="finding-meta">
 
@@ -573,6 +675,8 @@ function App() {
 
                               </div>
 
+                              {/* ================= EVIDENCE ================= */}
+
                               <div className="real-evidence">
 
                                 <strong>
@@ -584,6 +688,8 @@ function App() {
                                 </code>
 
                               </div>
+
+                              {/* ================= RECOMMENDATION ================= */}
 
                               <div className="real-recommendation">
 
@@ -611,7 +717,7 @@ function App() {
                 </div>
               )}
 
-              {/* HERO BENEFITS */}
+              {/* ================= HERO BENEFITS ================= */}
 
               <div className="hero-benefits">
 
@@ -622,6 +728,7 @@ function App() {
                   </div>
 
                   <div>
+
                     <strong>
                       Detect Vulnerabilities
                     </strong>
@@ -629,6 +736,7 @@ function App() {
                     <span>
                       Find security issues early
                     </span>
+
                   </div>
 
                 </div>
@@ -640,6 +748,7 @@ function App() {
                   </div>
 
                   <div>
+
                     <strong>
                       AI-Powered Analysis
                     </strong>
@@ -647,6 +756,7 @@ function App() {
                     <span>
                       Get clear explanations
                     </span>
+
                   </div>
 
                 </div>
@@ -658,6 +768,7 @@ function App() {
                   </div>
 
                   <div>
+
                     <strong>
                       Smart Fix Suggestions
                     </strong>
@@ -665,6 +776,7 @@ function App() {
                     <span>
                       Save time, fix faster
                     </span>
+
                   </div>
 
                 </div>
@@ -676,6 +788,7 @@ function App() {
                   </div>
 
                   <div>
+
                     <strong>
                       Secure & Private
                     </strong>
@@ -683,6 +796,7 @@ function App() {
                     <span>
                       Your code, your control
                     </span>
+
                   </div>
 
                 </div>
@@ -691,7 +805,7 @@ function App() {
 
             </div>
 
-            {/* RIGHT DASHBOARD */}
+            {/* ================= RIGHT DASHBOARD ================= */}
 
             <div className="hero-visual">
 
@@ -699,11 +813,15 @@ function App() {
 
               <div className="dashboard-card">
 
+                {/* ================= SIDEBAR ================= */}
+
                 <div className="dashboard-sidebar">
 
                   <div className="mini-brand">
                     <ShieldCheck size={18} />
-                    <span>SecureAI</span>
+                    <span>
+                      SecureAI
+                    </span>
                   </div>
 
                   <div className="side-item selected">
@@ -733,6 +851,8 @@ function App() {
 
                 </div>
 
+                {/* ================= DASHBOARD MAIN ================= */}
+
                 <div className="dashboard-main">
 
                   <div className="dashboard-header">
@@ -755,13 +875,18 @@ function App() {
 
                     </div>
 
+                    {/* SECURITY SCORE */}
+
                     <div className="score-container">
 
                       <div className="score-ring">
-                        <span>72</span>
+                        <span>
+                          72
+                        </span>
                       </div>
 
                       <div>
+
                         <small>
                           Security Score
                         </small>
@@ -773,39 +898,65 @@ function App() {
                         <em>
                           Medium Risk
                         </em>
+
                       </div>
 
                     </div>
 
                   </div>
 
+                  {/* ================= SEVERITY GRID ================= */}
+
                   <div className="severity-grid">
 
                     <div className="severity critical">
-                      <span>Critical</span>
-                      <strong>1</strong>
+                      <span>
+                        Critical
+                      </span>
+
+                      <strong>
+                        1
+                      </strong>
                     </div>
 
                     <div className="severity high">
-                      <span>High</span>
-                      <strong>3</strong>
+                      <span>
+                        High
+                      </span>
+
+                      <strong>
+                        3
+                      </strong>
                     </div>
 
                     <div className="severity medium">
-                      <span>Medium</span>
-                      <strong>5</strong>
+                      <span>
+                        Medium
+                      </span>
+
+                      <strong>
+                        5
+                      </strong>
                     </div>
 
                     <div className="severity low">
-                      <span>Low</span>
-                      <strong>2</strong>
+                      <span>
+                        Low
+                      </span>
+
+                      <strong>
+                        2
+                      </strong>
                     </div>
 
                   </div>
 
+                  {/* ================= FINDINGS ================= */}
+
                   <div className="findings">
 
                     <div className="findings-title">
+
                       <span>
                         Top Findings
                       </span>
@@ -813,6 +964,7 @@ function App() {
                       <button>
                         View all
                       </button>
+
                     </div>
 
                     <Finding
@@ -849,7 +1001,7 @@ function App() {
 
               </div>
 
-              {/* OLLAMA BADGE */}
+              {/* ================= OLLAMA BADGE ================= */}
 
               <div className="ollama-badge">
 
@@ -857,20 +1009,28 @@ function App() {
                   <BrainCircuit size={25} />
                 </div>
 
-                <span>Powered by</span>
-                <strong>Ollama</strong>
+                <span>
+                  Powered by
+                </span>
+
+                <strong>
+                  Ollama
+                </strong>
 
               </div>
 
-              {/* TERMINAL */}
+              {/* ================= TERMINAL ================= */}
 
               <div className="terminal-card">
 
                 <div>
+
                   <span className="terminal-dot"></span>
+
                   <span>
                     Analyzing code...
                   </span>
+
                 </div>
 
                 <div className="terminal-line">
@@ -893,6 +1053,7 @@ function App() {
             </div>
 
           </div>
+
         </section>
 
         {/* ================= FEATURES ================= */}
@@ -910,13 +1071,15 @@ function App() {
 
             <h2>
               Everything you need for{" "}
-              <span>safer code.</span>
+              <span>
+                safer code.
+              </span>
             </h2>
 
             <p>
               From scanning to fixing, SecureAI gives
-              developers the tools and intelligence to build
-              secure applications with confidence.
+              developers the tools and intelligence to
+              build secure applications with confidence.
             </p>
 
           </div>
@@ -978,12 +1141,15 @@ function App() {
 
             <h2>
               Security from{" "}
-              <span>commit to fix.</span>
+              <span>
+                commit to fix.
+              </span>
             </h2>
 
             <p>
-              SecureAI combines deterministic security scanning
-              with AI-powered reasoning and remediation.
+              SecureAI combines deterministic security
+              scanning with AI-powered reasoning and
+              remediation.
             </p>
 
           </div>
@@ -1035,7 +1201,9 @@ function App() {
 
             <h2>
               Find vulnerabilities before
-              <span> attackers do.</span>
+              <span>
+                {" "}attackers do.
+              </span>
             </h2>
 
             <p>
@@ -1075,11 +1243,14 @@ function App() {
             <div className="brand">
 
               <div className="brand-icon">
+
                 <ShieldCheck size={25} />
+
                 <Code2
                   size={11}
                   className="brand-code"
                 />
+
               </div>
 
               <span>
@@ -1092,8 +1263,8 @@ function App() {
             </div>
 
             <p>
-              AI-powered source code security for modern
-              developers.
+              AI-powered source code security for
+              modern developers.
             </p>
 
           </div>
@@ -1101,42 +1272,63 @@ function App() {
           <div className="footer-links">
 
             <div>
-              <strong>Product</strong>
+
+              <strong>
+                Product
+              </strong>
+
               <a href="#features">
                 Features
               </a>
+
               <a href="#how-it-works">
                 How it works
               </a>
+
               <a href="#security">
                 Security
               </a>
+
             </div>
 
             <div>
-              <strong>Resources</strong>
+
+              <strong>
+                Resources
+              </strong>
+
               <a href="#">
                 Documentation
               </a>
+
               <a href="#">
                 GitHub
               </a>
+
               <a href="#">
                 API
               </a>
+
             </div>
 
             <div>
-              <strong>Company</strong>
+
+              <strong>
+                Company
+              </strong>
+
               <a href="#about">
                 About
               </a>
+
               <a href="#">
                 Contact
               </a>
+
               <a href="#">
                 Privacy
               </a>
+
             </div>
 
           </div>
@@ -1162,7 +1354,9 @@ function App() {
 }
 
 
-/* ================= FINDING COMPONENT ================= */
+/* =========================================================
+   FINDING COMPONENT
+========================================================= */
 
 function Finding({
   severity,
@@ -1211,7 +1405,9 @@ function Finding({
 }
 
 
-/* ================= FEATURE CARD ================= */
+/* =========================================================
+   FEATURE CARD
+========================================================= */
 
 function FeatureCard({
   icon,
@@ -1247,7 +1443,9 @@ function FeatureCard({
 }
 
 
-/* ================= WORKFLOW STEP ================= */
+/* =========================================================
+   WORKFLOW STEP
+========================================================= */
 
 function WorkflowStep({
   number,
@@ -1287,5 +1485,3 @@ function WorkflowStep({
 }
 
 export default App;
-
-

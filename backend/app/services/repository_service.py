@@ -64,7 +64,12 @@ class RepositoryService:
         self,
         repository_path: Path,
     ) -> list[str]:
-        """Find supported source files while ignoring generated directories."""
+        """
+        Discover relevant source/configuration files.
+
+        Generated directories, dependency folders and Git metadata
+        are ignored.
+        """
 
         ignored_directories = {
             ".git",
@@ -72,53 +77,85 @@ class RepositoryService:
             "__pycache__",
             ".venv",
             "venv",
+            "env",
+            ".env",
             "dist",
             "build",
+            ".next",
+            ".nuxt",
+            "coverage",
+            ".pytest_cache",
+            ".mypy_cache",
         }
 
         supported_extensions = {
+            # Python
             ".py",
+
+            # JavaScript / TypeScript
             ".js",
             ".jsx",
             ".ts",
             ".tsx",
+
+            # Backend / compiled languages
             ".php",
             ".java",
             ".go",
             ".rs",
+            ".c",
+            ".cpp",
+            ".h",
+            ".hpp",
+
+            # Database
             ".sql",
+
+            # Configuration files useful for security analysis
+            ".json",
+            ".yaml",
+            ".yml",
+            ".toml",
+            ".ini",
+            ".xml",
         }
 
         files: list[str] = []
 
         for path in repository_path.rglob("*"):
+
             if not path.is_file():
                 continue
 
+            # Ignore unwanted directories anywhere in the path.
             if any(
                 directory in ignored_directories
                 for directory in path.parts
             ):
                 continue
 
+            # Ignore unsupported file types.
             if path.suffix.lower() not in supported_extensions:
                 continue
 
             try:
-                size_kb = path.stat().st_size / 1024
+                size_bytes = path.stat().st_size
 
-                if size_kb > settings.MAX_FILE_SIZE_KB:
+                if size_bytes > settings.MAX_FILE_SIZE_KB * 1024:
                     continue
 
             except OSError:
                 continue
 
-            files.append(
-                str(path.relative_to(repository_path))
-            )
+            relative_path = path.relative_to(repository_path)
+
+            files.append(str(relative_path))
 
             if len(files) >= settings.MAX_FILES_IN_REPOSITORY:
                 break
+
+        # Stable ordering makes scan results predictable.
+        files.sort()
 
         return files
 

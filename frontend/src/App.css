@@ -2005,79 +2005,50 @@ footer {
    FINDINGS TABLE
 ========================================================= */
 
-.findings-table {
-  width: 100%;
+.findings-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid rgba(70, 105, 150, 0.28);
+  border-radius: 12px;
+  background: rgba(3, 12, 27, 0.45);
 }
 
-.finding-table-head {
-  display: grid;
+.findings-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+}
 
-  grid-template-columns:
-    115px
-    90px
-    1.2fr
-    1.4fr
-    70px
-    30px;
-
-  gap: 15px;
-
-  align-items: center;
-
-  min-height: 46px;
-
-  padding: 0 23px;
-
-  background:
-    rgba(15, 23, 42, 0.6);
-
-  color: #64748b;
-
+.findings-table th {
+  padding: 13px 15px;
+  text-align: left;
+  color: #7187a4;
+  background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(70, 105, 150, 0.25);
   font-size: 10px;
-  font-weight: 800;
-
-  letter-spacing: 0.7px;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.findings-table td {
+  padding: 14px 15px;
+  border-bottom: 1px solid rgba(70, 105, 150, 0.13);
+  color: #cbd5e1;
+  font-size: 12px;
+  vertical-align: middle;
 }
 
 .finding-table-row {
-  width: 100%;
-
-  display: grid;
-
-  grid-template-columns:
-    115px
-    90px
-    1.2fr
-    1.4fr
-    70px
-    30px;
-
-  gap: 15px;
-
-  align-items: center;
-
-  min-height: 65px;
-
-  padding: 0 23px;
-
-  border: 0;
-  border-top: 1px solid
-    rgba(148, 163, 184, 0.07);
-
-  background: transparent;
-
-  color: #94a3b8;
-
-  text-align: left;
-
-  transition:
-    background 0.2s ease;
+  cursor: pointer;
+  transition: background 0.18s;
 }
 
 .finding-table-row:hover {
-  background:
-    rgba(37, 99, 235, 0.06);
+  background: rgba(37, 99, 235, 0.07);
+}
+
+.finding-table-row:last-child td {
+  border-bottom: 0;
 }
 
 .severity-badge {
@@ -2820,9 +2791,7 @@ footer {
     width: 100%;
   }
 
-  .findings-table {
-    overflow-x: auto;
-  }
+  
 
   .finding-table-head,
   .finding-table-row {
@@ -3404,6 +3373,271 @@ footer {
 .real-recommendation {
   color: #a7f3d0 !important;
 }
+/* =========================================================
+   REAL FINDING CARDS
+   ========================================================= */
+
+.findings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.real-finding-card {
+  padding: 20px;
+  border: 1px solid rgba(70, 105, 150, 0.28);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 32, 53, 0.92),
+      rgba(7, 20, 37, 0.96)
+    );
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.18),
+    inset 0 1px rgba(255, 255, 255, 0.025);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.real-finding-card:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(96, 165, 250, 0.28);
+
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(59, 130, 246, 0.04);
+}
+
+.real-finding-top {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-bottom: 10px;
+}
+
+.real-finding-card h3 {
+  margin: 0;
+
+  color: #f8fafc;
+
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: -0.3px;
+}
+
+.finding-message {
+  margin-top: 8px;
+
+  color: #a8b8cd;
+
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.real-finding-card .finding-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding-top: 13px;
+
+  border-top: 1px solid
+    rgba(148, 163, 184, 0.08);
+}
+
+.real-finding-card .finding-meta span {
+  color: #7f93af;
+
+  font-size: 11px;
+}
+
+.real-finding-card .finding-meta strong {
+  color: #dbeafe;
+
+  font-family: Consolas, "Courier New", monospace;
+  font-weight: 600;
+}
+
+/* Evidence block */
+
+.real-finding-card .real-evidence {
+  margin-top: 12px;
+
+  padding: 14px;
+
+  border: 1px solid
+    rgba(70, 105, 150, 0.22);
+
+  border-radius: 9px;
+
+  background: #020817;
+
+  overflow-x: auto;
+
+  color: #c4d2e5;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 12px;
+  line-height: 1.7;
+
+  white-space: pre;
+}
+
+.real-finding-card .real-evidence strong {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #93c5fd;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
+  font-size: 10px;
+
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.real-finding-card .real-evidence code {
+  color: #c4d2e5;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 12px;
+}
+
+/* Recommendation */
+
+.real-finding-card .real-recommendation {
+  margin-top: 14px;
+
+  padding: 14px;
+
+  border-left: 3px solid #34d399;
+
+  border-radius: 0 8px 8px 0;
+
+  background:
+    rgba(16, 185, 129, 0.055);
+}
+
+.real-finding-card .real-recommendation strong {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #6ee7b7;
+
+  font-size: 10px;
+
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.real-finding-card .real-recommendation p {
+  margin: 0;
+
+  color: #a7f3d0;
+
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* Severity badges */
+
+.real-severity {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 72px;
+
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.real-severity.critical {
+  color: #fca5a5;
+
+  background:
+    rgba(239, 68, 68, 0.13);
+
+  border:
+    1px solid rgba(239, 68, 68, 0.25);
+}
+
+.real-severity.high {
+  color: #fdba74;
+
+  background:
+    rgba(249, 115, 22, 0.13);
+
+  border:
+    1px solid rgba(249, 115, 22, 0.25);
+}
+
+.real-severity.medium {
+  color: #fde047;
+
+  background:
+    rgba(234, 179, 8, 0.13);
+
+  border:
+    1px solid rgba(234, 179, 8, 0.25);
+}
+
+.real-severity.low {
+  color: #7dd3fc;
+
+  background:
+    rgba(56, 189, 248, 0.13);
+
+  border:
+    1px solid rgba(56, 189, 248, 0.25);
+}
+
+.rule-id {
+  color: #60a5fa;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 11px;
+  font-weight: 600;
+}
 
 /* ================= NO FINDINGS ================= */
 
@@ -3517,5 +3751,491 @@ footer {
 
   .finding-detail {
     padding: 15px;
+  }
+}
+
+/* =========================================================
+   FULL SCREEN SECURITY ANALYSIS
+   ========================================================= */
+
+/* =========================================================
+   SECUREAI - FINAL REAL SCAN RESULTS OVERRIDE
+   Paste this at the VERY END of App.css
+========================================================= */
+
+/* Results section */
+.scan-results-section {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 45px 32px 90px;
+}
+
+/* Main two-column layout */
+.real-results-layout {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+/* Left panel */
+.real-results-sidebar {
+  width: 100%;
+  min-width: 0;
+  position: sticky;
+  top: 95px;
+}
+
+/* Right panel */
+.real-results-main {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Scan summary card */
+.real-scan-card {
+  width: 100%;
+  padding: 28px;
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(19, 48, 91, 0.98),
+      rgba(7, 23, 46, 0.98)
+    );
+
+  border: 1px solid rgba(73, 139, 219, 0.25);
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Findings wrapper */
+.real-findings {
+  width: 100%;
+}
+
+/* Findings list */
+.findings-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* =========================================================
+   FINDING CARD
+========================================================= */
+
+.real-finding-card {
+  width: 100%;
+  min-width: 0;
+  padding: 25px;
+
+  border: 1px solid rgba(81, 132, 190, 0.22);
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 37, 65, 0.98),
+      rgba(7, 21, 41, 0.98)
+    );
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.real-finding-card:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(74, 144, 226, 0.45);
+
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.28),
+    0 0 25px rgba(37, 99, 235, 0.05);
+}
+
+/* Finding top row */
+.real-finding-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 14px;
+}
+
+/* Severity */
+.real-severity {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 78px;
+  height: 28px;
+  padding: 0 11px;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.real-severity.critical {
+  color: #ff8585;
+  background: rgba(239, 68, 68, 0.13);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.real-severity.high {
+  color: #ffad72;
+  background: rgba(249, 115, 22, 0.13);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.real-severity.medium {
+  color: #f4d35e;
+  background: rgba(234, 179, 8, 0.13);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.real-severity.low {
+  color: #60d9ff;
+  background: rgba(14, 165, 233, 0.13);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+/* Rule ID */
+.rule-id {
+  color: #60a5fa;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Vulnerability title */
+.real-finding-card h3 {
+  margin: 0 0 9px;
+
+  color: #f8fbff;
+
+  font-size: 19px;
+  line-height: 1.4;
+  font-weight: 750;
+
+  letter-spacing: -0.3px;
+}
+
+/* Message */
+.real-finding-card .finding-message {
+  margin: 0 0 18px;
+
+  max-width: none;
+
+  color: #a9bad0;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   FILE / LINE / COLUMN
+========================================================= */
+
+.real-finding-card .finding-meta {
+  width: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  gap: 10px 28px;
+
+  margin: 0;
+
+  padding: 14px 0;
+
+  border-top: 1px solid rgba(120, 160, 205, 0.12);
+  border-bottom: 1px solid rgba(120, 160, 205, 0.12);
+
+  color: #91a6c0;
+
+  font-size: 11px;
+}
+
+.real-finding-card .finding-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: #91a6c0;
+}
+
+.real-finding-card .finding-meta strong {
+  color: #d8e5f5;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
+  font-weight: 600;
+}
+
+/* =========================================================
+   EVIDENCE
+========================================================= */
+
+.real-finding-card .real-evidence {
+  width: 100%;
+
+  margin-top: 16px;
+  padding: 16px;
+
+  border-radius: 10px;
+
+  background: #020a18;
+
+  border: 1px solid rgba(76, 120, 172, 0.18);
+
+  overflow-x: auto;
+
+  color: #c4d2e5;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.real-finding-card .real-evidence strong {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #63b3ff;
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.real-finding-card .real-evidence code {
+  display: block;
+
+  color: #d6e7ff;
+
+  font-family:
+    "JetBrains Mono",
+    "Fira Code",
+    Consolas,
+    monospace;
+
+  font-size: 12px;
+  line-height: 1.7;
+
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* =========================================================
+   RECOMMENDATION
+========================================================= */
+
+.real-finding-card .real-recommendation {
+  width: 100%;
+
+  margin-top: 16px;
+  padding: 16px 18px;
+
+  border-left: 3px solid #27d7b0;
+
+  border-radius: 0 10px 10px 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 184, 166, 0.1),
+      rgba(20, 184, 166, 0.025)
+    );
+}
+
+.real-finding-card .real-recommendation strong {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #48e6c4;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.real-finding-card .real-recommendation p {
+  margin: 0;
+
+  color: #b7d4d1;
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   FILE LIST
+========================================================= */
+
+.real-files-list {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.real-file-item {
+  width: 100%;
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 14px;
+
+  border-radius: 9px;
+
+  background: rgba(31, 61, 105, 0.28);
+
+  border: 1px solid rgba(74, 130, 195, 0.15);
+
+  color: #c9dbef;
+
+  font-family: Consolas, monospace;
+  font-size: 12px;
+
+  transition: 0.2s ease;
+}
+
+.real-file-item:hover {
+  background: rgba(43, 86, 143, 0.35);
+
+  border-color: rgba(80, 153, 230, 0.3);
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.real-stats-grid {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin: 24px 0 30px;
+}
+
+.real-stat-card {
+  min-width: 0;
+
+  padding: 18px;
+
+  border-radius: 12px;
+
+  background: rgba(30, 60, 105, 0.3);
+
+  border: 1px solid rgba(75, 130, 195, 0.18);
+}
+
+.real-stat-label {
+  color: #7291b5;
+  font-size: 11px;
+}
+
+.real-stat-value {
+  margin-top: 5px;
+
+  color: #f4f8ff;
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 1000px) {
+  .real-results-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .real-results-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .scan-results-section {
+    padding: 30px 16px 60px;
+  }
+
+  .real-finding-card {
+    padding: 18px;
+  }
+
+  .real-finding-card h3 {
+    font-size: 16px;
+  }
+
+  .real-finding-top {
+    flex-wrap: wrap;
+  }
+
+  .real-finding-card .finding-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .real-stats-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
